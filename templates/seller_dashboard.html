@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="seller-dashboard">
@@ -38,7 +39,12 @@
         </nav>
         <div class="main-content">
             <div class="add-item">
-                <h1>Add Item</h1>
+                <div class="shirt-wrapper">
+                    <i class="fa-solid fa-shirt"></i>
+                    <h2>Add Item</h2>
+                </div>
+                <h3>Ready to add a design to your arsenal? Just hit the button below!</h3>
+                <a href="{{ url_for('generate') }}" class="add-item-btn">Add Item&nbsp;&nbsp;<i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
     </div>

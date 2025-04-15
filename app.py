@@ -107,6 +107,10 @@ def seller_dashboard():
     role = session['role']
     return render_template('seller_dashboard.html', role=role)
 
+@app.route('/generate')
+def generate():
+    return render_template('generate.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
