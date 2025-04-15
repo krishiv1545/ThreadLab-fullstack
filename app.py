@@ -26,9 +26,7 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    if 'user_id' in session:
-        return redirect(url_for('dashboard'))
-    return render_template('signup.html')
+    return render_template('index.html')
 
 
 @app.route('/signup', methods=['GET', 'POST'])

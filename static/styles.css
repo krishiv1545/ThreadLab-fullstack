@@ -1,0 +1,126 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.dashboard-container {
+  min-height: 100vh;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: fixed;
+}
+
+.navbar {
+  height: 70px;
+  padding: 0 40px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 80%;
+  border-radius: 1000px;
+  background: #8888887c;
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  transition: box-shadow 0.3s ease-in-out;
+
+}
+
+.navbar:hover {
+  box-shadow: 0 00px 30px rgba(255, 255, 255);
+}
+
+.nav-separator {
+  color: #eeeeee;
+  opacity: 0.8;
+  margin-inline: 10px;
+
+}
+
+.home {
+  height: 100vh;
+  background-color: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+  background-size: cover;
+}
+
+.landing-content {
+  padding-top: 100px;
+  padding-inline: 10vw;
+}
+
+.logo {
+  color: #fff;
+}
+
+.navbar.left {
+  display: flex;
+  flex-direction: column;
+}
+
+.underline {
+  position: absolute;
+  width: 130px;
+  height: 12px;
+  background-color: #ffffff6c;
+  transform: translateY(-12px)
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.signup-btn {
+  margin-right: 5px;
+  padding: 7px 15px;
+  border-radius: 20px;
+  background-color: #fff;
+  color: #000;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid #fff;
+
+}
+
+.signup-btn:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.login-btn {
+  padding: 7px 15px;
+  border-radius: 20px;
+  background-color: #ffffff00;
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid #fff;
+}
+
+.login-btn:hover {
+  background-color: #000;
+  color: #fff;
+} 
+
+.navbar .middle {
+  display: flex;
+  flex-direction: row;
+}
+
+.about-us, .features, .our-team {
+  height: 100vh;
+}

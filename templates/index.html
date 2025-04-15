@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadLab</title>
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <div class="home">
+        <nav>
+            <div class="navbar">
+                <div class="left">
+                    <h1 class="logo">ThreadLab</h1>
+                    <div class="underline"></div>
+                </div>
+                <div class="middle">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <div class="nav-separator">|</div>
+                    <a href="#about-us">About Us</a>
+                    <div class="nav-separator">|</div>
+                    <a href="#features">Features</a>
+                    <div class="nav-separator">|</div>
+                    <a href="#our-team">Contact</a>
+                </div>
+                <div class="right">
+                    <a href="{{ url_for('signup') }}" class="signup-btn">SignUp</a>
+                    <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+                </div>
+            </div>
+        </nav>
+        <div class="landing-content">
+        </div>
+    </div>
+
+    <div class="about-us">
+    </div>
+
+    <div class="features">
+    </div>
+
+    <div class="our-team">
+    </div>
+</body>
+</html>
