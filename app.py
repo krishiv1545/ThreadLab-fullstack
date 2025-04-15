@@ -31,7 +31,10 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    role = None
+    if 'user_id' in session:
+        role = session['role']
+    return render_template('index.html', role=role)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
