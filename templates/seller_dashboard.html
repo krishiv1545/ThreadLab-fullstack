@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="seller-dashboard">
+        <nav>
+            <div class="navbar">
+                <div class="left">
+                    <h1 class="logo">ThreadLab</h1>
+                    <div class="underline"></div>
+                </div>
+                <div class="middle">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <div class="nav-separator">|</div>
+                    <a href="{{ url_for('seller_dashboard') }}">Dashboard</a>
+                    <div class="nav-separator">|</div>
+                    <a href="#">Marketplace</a>
+                    <div class="nav-separator">|</div>
+
+                    
+                    
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </nav>
+        </div>
+        </body>
+        </html>

@@ -4,11 +4,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from datetime import datetime, UTC
 import os
+from flask_session import Session
+import redis
 
 
 load_dotenv()
 
 app = Flask(__name__)
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379)
+Session(app)
 
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project_db.sqlite3'
@@ -36,9 +41,10 @@ def signup():
         username = request.form['username']
         password = request.form['password']
         hashed_password = generate_password_hash(password)
+        role = request.form['role']
 
         try:
-            new_user = User(email=email, username=username,
+            new_user = User(email=email, username=username, role=role,
                             password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
@@ -67,7 +73,14 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
-            return redirect(url_for('dashboard'))
+            session['username'] = user.username
+            session['role'] = user.role  # <- This is important for role checks
+
+            if user.role == 'seller':
+                return redirect(url_for('seller_dashboard'))
+            else:
+                return redirect(url_for('home'))
+
         flash('Invalid username or password.', 'error')
     return render_template('login.html')
 
@@ -77,6 +90,17 @@ def logout():
     session.pop('user_id', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
+
+
+@app.route('/seller_dashboard')
+def seller_dashboard():
+    if 'user_id' not in session:
+        flash('Please log in.', 'error')
+        return redirect(url_for('home'))
+    if session['role'] != 'seller':
+        flash('You are not a seller.', 'error')
+        return redirect(url_for('home'))
+    return render_template('seller_dashboard.html')
 
 
 if __name__ == '__main__':
