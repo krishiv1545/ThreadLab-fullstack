@@ -124,3 +124,20 @@ a {
 .about-us, .features, .our-team {
   height: 100vh;
 }
+
+.main-content {
+  padding-top: 100px;
+  padding-inline: 10vw;
+}
+
+.add-item {
+  color: #fff;
+  min-height: 400px;
+  background-color: #8888887c;
+  border-radius: 35px;
+  padding: 20px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

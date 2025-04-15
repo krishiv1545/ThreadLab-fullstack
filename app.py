@@ -52,19 +52,15 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             flash('Signup successful! Please log in.', 'success')
-            return redirect(url_for('login'))
+            # Redirect to home page with login modal parameter
+            return redirect(url_for('home', show_login='true'))
         except Exception as e:
             flash('Username or email already exists.', 'error')
             print(e)
-    return render_template('signup.html')
-
-
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        flash('Please log in.', 'error')
-        return redirect(url_for('home'))
-    return render_template('dashboard.html')
+            # Redirect to home page with signup modal parameter
+            return redirect(url_for('home', show_signup='true'))
+    # If GET request, redirect to home with signup modal parameter
+    return redirect(url_for('home', show_signup='true'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -77,7 +73,7 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['username'] = user.username
-            session['role'] = user.role  # <- This is important for role checks
+            session['role'] = user.role
 
             if user.role == 'seller':
                 return redirect(url_for('seller_dashboard'))
@@ -85,12 +81,17 @@ def login():
                 return redirect(url_for('home'))
 
         flash('Invalid username or password.', 'error')
-    return render_template('login.html')
+        # Redirect to home page with login modal parameter
+        return redirect(url_for('home', show_login='true'))
+    # If GET request, redirect to home with login modal parameter
+    return redirect(url_for('home', show_login='true'))
 
 
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
+    session.pop('username', None)
+    session.pop('role', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
 
@@ -99,11 +100,12 @@ def logout():
 def seller_dashboard():
     if 'user_id' not in session:
         flash('Please log in.', 'error')
-        return redirect(url_for('home'))
+        return redirect(url_for('home', show_login='true'))
     if session['role'] != 'seller':
         flash('You are not a seller.', 'error')
         return redirect(url_for('home'))
-    return render_template('seller_dashboard.html')
+    role = session['role']
+    return render_template('seller_dashboard.html', role=role)
 
 
 if __name__ == '__main__':

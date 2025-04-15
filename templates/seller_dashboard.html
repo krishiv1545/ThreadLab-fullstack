@@ -17,17 +17,30 @@
                 <div class="middle">
                     <a href="{{ url_for('home') }}">Home</a>
                     <div class="nav-separator">|</div>
-                    <a href="{{ url_for('seller_dashboard') }}">Dashboard</a>
-                    <div class="nav-separator">|</div>
+                    {% if role == 'seller' %}
+                        <a href="{{ url_for('seller_dashboard') }}">Dashboard</a>
+                        <div class="nav-separator">|</div>
+                    {% endif %}
                     <a href="#">Marketplace</a>
                     <div class="nav-separator">|</div>
-
-                    
-                    
-                    <a href="{{ url_for('logout') }}">Logout</a>
+                    <a href="#our-team">Contact</a>
+                </div>
+                <div class="right">
+                    {% if role == 'seller' or role == 'cust' %}
+                        <a href="#" class="signup-btn">Profile</a>
+                        <a href="{{ url_for('logout') }}" class="login-btn">Logout</a>
+                    {% else %}
+                        <a href="#" class="signup-btn" onclick="openSignupModal()">SignUp</a>
+                        <a href="#" class="login-btn" onclick="openLoginModal()">Login</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
+        <div class="main-content">
+            <div class="add-item">
+                <h1>Add Item</h1>
+            </div>
         </div>
-        </body>
-        </html>
+    </div>
+</body>
+</html>

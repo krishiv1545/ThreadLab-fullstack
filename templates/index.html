@@ -5,6 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadLab</title>
     <link rel="stylesheet" href="../static/styles.css">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .form-container {
+            padding: 20px;
+        }
+        
+        .form-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-container input, 
+        .form-container select, 
+        .form-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-container button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
 </head>
 <body>
     <div class="home">
@@ -17,6 +102,10 @@
                 <div class="middle">
                     <a href="{{ url_for('home') }}">Home</a>
                     <div class="nav-separator">|</div>
+                    {% if role == 'seller' %}
+                        <a href="{{ url_for('seller_dashboard') }}">Dashboard</a>
+                        <div class="nav-separator">|</div>
+                    {% endif %}
                     <a href="#">Marketplace</a>
                     <div class="nav-separator">|</div>
                     <a href="#about-us">About Us</a>
@@ -26,8 +115,13 @@
                     <a href="#our-team">Contact</a>
                 </div>
                 <div class="right">
-                    <a href="{{ url_for('signup') }}" class="signup-btn">SignUp</a>
-                    <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+                    {% if role == 'seller' or role == 'cust' %}
+                        <a href="#" class="signup-btn">Profile</a>
+                        <a href="{{ url_for('logout') }}" class="login-btn">Logout</a>
+                    {% else %}
+                        <a href="#" class="signup-btn" onclick="openSignupModal()">SignUp</a>
+                        <a href="#" class="login-btn" onclick="openLoginModal()">Login</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -43,5 +137,105 @@
 
     <div class="our-team">
     </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <div class="form-container">
+                <h2>Login</h2>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+                    <input type="text" name="username" placeholder="Username" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <button type="submit">Login</button>
+                </form>
+                
+                <p>Don't have an account? <a href="#" onclick="closeLoginModal(); openSignupModal();">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSignupModal()">&times;</span>
+            <div class="form-container">
+                <h2>Sign Up</h2>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form method="POST" action="{{ url_for('signup') }}" id="signupForm" enctype="multipart/form-data">
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="text" name="username" placeholder="Username" required />
+                    <select name="role" id="role">
+                        <option value="cust">Customer</option>
+                        <option value="seller">Seller</option>
+                    </select>
+                    <input type="password" name="password" placeholder="Password" required />
+                    <button type="submit">Sign Up</button>
+                </form>
+                
+                <p>Already have an account? <a href="#" onclick="closeSignupModal(); openLoginModal();">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get modal elements
+        const loginModal = document.getElementById("loginModal");
+        const signupModal = document.getElementById("signupModal");
+        
+        // Open modal functions
+        function openLoginModal() {
+            loginModal.style.display = "flex";
+        }
+        
+        function openSignupModal() {
+            signupModal.style.display = "flex";
+        }
+        
+        // Close modal functions
+        function closeLoginModal() {
+            loginModal.style.display = "none";
+        }
+        
+        function closeSignupModal() {
+            signupModal.style.display = "none";
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == loginModal) {
+                closeLoginModal();
+            }
+            if (event.target == signupModal) {
+                closeSignupModal();
+            }
+        }
+        
+        // Check for URL parameters to open modals
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('show_login') === 'true') {
+                openLoginModal();
+            }
+            if (urlParams.get('show_signup') === 'true') {
+                openSignupModal();
+            }
+        }
+    </script>
 </body>
 </html>
