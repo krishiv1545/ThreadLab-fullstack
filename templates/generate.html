@@ -18,9 +18,41 @@
                 <input id="proj-title" name="proj-title" type="text" value="Untitled">
             </div>
             <button class="signup-btn">Save Design</button>
-        </div> 
-        <div class="workspace-footer">
+        </div>
 
+        <div class="toolset-left">
+            Toolset
+        </div>
+
+        <div class="sketch-area">
+            <img src="{{ url_for('static', filename='shirt.png')}}" alt="White T-shirt">
+            <div class="matrix">
+            {% for i in range(15) %}
+                <div class="row">
+                    {% for j in range(15) %}
+                        <div class="pixel" data-i="{{ i }}" data-j="{{ j }}" style="background-color: {{ matrix[i][j] }}">
+                            <div class="info">
+                                <p>{{ i, j}}</p>
+                                <p>{{ matrix[i][j] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+
+        <div class="toolset-right">
+            Toolset
+        </div>
+
+        <div class="workspace-footer">
+            <form method="POST" action="{{ url_for('clear_matrix') }}">
+                <button class="login-btn">Clear</button>
+            </form>
+            <form method="POST" action="{{ url_for('generate_with_groq') }}">
+                <button class="login-btn">Use GROQ</button>
+            </form>
         </div>   
     </div>
 </body>

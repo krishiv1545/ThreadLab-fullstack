@@ -15,7 +15,8 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379)
 Session(app)
 
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY') 
+groq_api_key = os.getenv('GROQ_API_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project_db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 UPLOAD_FOLDER = 'static/uploads'
@@ -76,6 +77,15 @@ def login():
             session['role'] = user.role
 
             if user.role == 'seller':
+                matrix = []
+                for i in range(15):
+                    row = []
+                    for j in range(15):
+                        row.append("#ffffff00")
+                    matrix.append(row)
+                
+                session['matrix'] = matrix
+
                 return redirect(url_for('seller_dashboard'))
             else:
                 return redirect(url_for('home'))
@@ -107,9 +117,47 @@ def seller_dashboard():
     role = session['role']
     return render_template('seller_dashboard.html', role=role)
 
-@app.route('/generate')
+@app.route('/generate', methods=['GET', 'POST'])
 def generate():
-    return render_template('generate.html')
+    if 'user_id' not in session:
+        flash('Please log in.', 'error')
+        return redirect(url_for('login'))
+    if session['role'] != 'seller':
+        flash('You are not a seller.', 'error')
+        return redirect(url_for('home'))
+    
+    return render_template('generate.html', role=session['role'], matrix=session['matrix'])
+
+
+@app.route('/clear-matrix', methods=['GET', 'POST'])
+def clear_matrix():
+    matrix = []
+    for i in range(15):
+        row = []
+        for j in range(15):
+            row.append("#ffffff00")
+        matrix.append(row)
+    
+    session['matrix'] = matrix
+
+    return redirect(url_for('generate', matrix=session['matrix']))
+
+
+
+@app.route('/generate-with-groq', methods=['GET', 'POST'])
+def generate_with_groq():
+    if 'user_id' not in session:
+        flash('Please log in.', 'error')
+        return redirect(url_for('login'))
+    if session['role'] != 'seller':
+        flash('You are not a seller.', 'error')
+        return redirect(url_for('home'))
+
+    matrix = session['matrix']
+    matrix[5][5] = "#ff0000"
+    session['matrix'] = matrix
+    
+    return redirect(url_for('generate', role=session['role'], matrix=session['matrix']))
 
 
 if __name__ == '__main__':
