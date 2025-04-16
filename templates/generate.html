@@ -27,9 +27,9 @@
         <div class="sketch-area">
             <img src="{{ url_for('static', filename='shirt.png')}}" alt="White T-shirt">
             <div class="matrix">
-            {% for i in range(15) %}
+            {% for i in range(30) %}
                 <div class="row">
-                    {% for j in range(15) %}
+                    {% for j in range(30) %}
                         <div class="pixel" data-i="{{ i }}" data-j="{{ j }}" style="background-color: {{ matrix[i][j] }}">
                             <div class="info">
                                 <p>{{ i, j}}</p>
@@ -50,7 +50,9 @@
             <form method="POST" action="{{ url_for('clear_matrix') }}">
                 <button class="login-btn">Clear</button>
             </form>
-            <form method="POST" action="{{ url_for('generate_with_groq') }}">
+            <form method="POST" action="{{ url_for('generate_with_groq') }}" style="display: flex; flex-direction: row">
+                <label for="prompt">Enter prompt: </label>
+                <input type="text" id="prompt" name="prompt" placeholder="A beautiful car">
                 <button class="login-btn" type="submit">Use GROQ</button>
             </form>
         </div>   
