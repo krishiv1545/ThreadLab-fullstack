@@ -6,6 +6,12 @@ from datetime import datetime, UTC
 import os
 from flask_session import Session
 import redis
+import openai
+import json
+from groq import Groq
+import regex as re
+import ast
+
 
 
 load_dotenv()
@@ -16,7 +22,6 @@ app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379)
 Session(app)
 
 app.secret_key = os.getenv('SECRET_KEY') 
-groq_api_key = os.getenv('GROQ_API_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project_db.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 UPLOAD_FOLDER = 'static/uploads'
@@ -28,6 +33,11 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+    timeout=120.0
+)
 
 
 @app.route('/')
@@ -152,12 +162,31 @@ def generate_with_groq():
     if session['role'] != 'seller':
         flash('You are not a seller.', 'error')
         return redirect(url_for('home'))
+    print("Hello")
+    chat_completion = client.chat.completions.create(
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a pixel art generator. When given any prompt, respond ONLY with a JSON object containing a 15x15 matrix of hexadecimal color codes. The JSON should use the key 'pixelArt' (exactly as written) for the matrix."
+        },
+        {
+            "role": "user",
+            "content": "Create pixel art of a car",
+        }
+    ],
+    model="llama3-70b-8192",
+    response_format={"type": "json_object"} 
+    )
 
-    matrix = session['matrix']
-    matrix[5][5] = "#ff0000"
-    session['matrix'] = matrix
-    
-    return redirect(url_for('generate', role=session['role'], matrix=session['matrix']))
+    output = chat_completion.choices[0].message.content
+    data = json.loads(output)
+    data = data["pixelArt"]
+    print(data)
+    print(type(data))
+
+    session['matrix'] = data
+
+    return redirect(url_for('generate'))
 
 
 if __name__ == '__main__':
